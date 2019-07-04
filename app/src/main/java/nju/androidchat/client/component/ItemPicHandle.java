@@ -17,14 +17,14 @@ import java.util.UUID;
 
 import nju.androidchat.client.R;
 
-public class ItemPicReceive extends LinearLayout  {
+public class ItemPicHandle extends LinearLayout  {
 
     private ImageView imageView;
     private Context context;
     private UUID messageId;
 //    private Handler handler;
 
-    public ItemPicReceive(Context context, String picURL, UUID messageId){
+    public ItemPicHandle(Context context, String picURL, UUID messageId, int type ){
         super(context);
         this.context = context;
         inflate(context, R.layout.item_text_receive, this);
@@ -34,34 +34,40 @@ public class ItemPicReceive extends LinearLayout  {
         linearLayout.removeViewAt(0);
         this.imageView = findViewById(R.id.view);
         this.messageId = messageId;
-        setPicURL(picURL);
+        setPicURL(picURL,type);
     }
 
     //设置图片URL
-    public void setPicURL(String picURL){
-        try {
-            URL url = new URL(picURL);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.setConnectTimeout(5000);
-            httpURLConnection.setRequestMethod("GET");
-            Bitmap bitmap = null;
-            InputStream inputStream = null;
+    public void setPicURL(String picURL,int type){
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL(picURL);
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                    httpURLConnection.setConnectTimeout(5000);
+                    httpURLConnection.setRequestMethod("GET");
+                    Bitmap bitmap = null;
+                    InputStream inputStream = null;
 
-            if (200 == httpURLConnection.getResponseCode()) {
-                inputStream = httpURLConnection.getInputStream();
-                bitmap = BitmapFactory.decodeStream(inputStream);
+                    if (200 == httpURLConnection.getResponseCode()) {
+                        inputStream = httpURLConnection.getInputStream();
+                        bitmap = BitmapFactory.decodeStream(inputStream);
 
-                Message message = Message.obtain();
-                message.obj = bitmap;
-                message.what = 1;
+                        Message message = Message.obtain();
+                        //设置message
+                        message.obj = bitmap;
+                        message.what = 1;
 
-                //handle处理传入的信息
-                handler.sendMessage(message);
+                        //handle处理传入的信息
+                        handler.sendMessage(message);
+                    }
+                    inputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            inputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        }.start();
     }
 
     @SuppressLint("HandlerLeak")

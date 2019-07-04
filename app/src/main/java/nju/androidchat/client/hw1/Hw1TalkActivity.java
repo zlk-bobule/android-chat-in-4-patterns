@@ -19,11 +19,10 @@ import lombok.extern.java.Log;
 import nju.androidchat.client.ClientMessage;
 import nju.androidchat.client.R;
 import nju.androidchat.client.Utils;
+import nju.androidchat.client.component.ItemPicHandle;
 import nju.androidchat.client.component.ItemTextReceive;
 import nju.androidchat.client.component.ItemTextSend;
 import nju.androidchat.client.component.OnRecallMessageRequested;
-
-import nju.androidchat.client.component.ItemPicSend;
 
 @Log
 public class Hw1TalkActivity extends AppCompatActivity implements Hw1Contract.View, TextView.OnEditorActionListener, OnRecallMessageRequested {
@@ -64,9 +63,9 @@ public class Hw1TalkActivity extends AppCompatActivity implements Hw1Contract.Vi
                             if(text.startsWith("http")){
                                 boolean isSend = message.getSenderUsername().equals(this.presenter.getUsername());
                                 if(isSend){
-                                    content.addView(new ItemPicSend(this, text, message.getMessageId()));
+                                    content.addView(new ItemPicHandle(this, text, message.getMessageId(),0));
                                 }else{
-                                    content.addView(new ItemTextSend(this, text, message.getMessageId(),this));
+                                    content.addView(new ItemPicHandle(this, text, message.getMessageId(),1));
                                 }
                             }else{
                                 boolean isSend = message.getSenderUsername().equals(this.presenter.getUsername());

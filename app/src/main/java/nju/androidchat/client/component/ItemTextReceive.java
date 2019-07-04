@@ -30,6 +30,8 @@ public class ItemTextReceive extends LinearLayout {
         super(context);
         this.context = context;
         inflate(context, R.layout.item_text_receive, this);
+        LinearLayout linearLayout = findViewById(R.id.chat_item_layout_content);
+        linearLayout.removeViewAt(1);
         this.textView = findViewById(R.id.chat_item_content_text);
         this.messageId = messageId;
         setText(text);
